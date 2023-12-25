@@ -3,7 +3,6 @@ import {
   Controller,
   Post,
   UploadedFiles,
-  UseGuards,
   UseInterceptors,
   UsePipes,
 } from '@nestjs/common';
@@ -15,10 +14,10 @@ import { CreateUserValidationBody } from './pipes/create-user-validation-body.pi
 import { createUserSchema } from './schemas/create-user.schema';
 import { EmailExistsInterceptor } from './interceptor/email-exists.interceptor';
 
-@Controller('/user')
+@Controller('user')
 export class UserController {
   constructor(private readonly newUserService: NewUserService) {}
-  @Post()
+  @Post('newuser')
   @UseInterceptors(FilesInterceptor('profilePicture'), EmailExistsInterceptor)
   @UsePipes(new CreateUserValidationBody(createUserSchema))
   async create(

@@ -12,7 +12,7 @@ export class NewUserService {
     private userRepository: UserRepository,
     private jwtService: JwtService,
     private managerFiles: ManagerFiles,
-    private sendMail: SendMail
+    private sendMail: SendMail,
   ) {}
   async createUser(data: CreateUserDTO, files?: Array<FileDTO>) {
     const password = await bcrypt.hash(data.password, 10);
@@ -27,11 +27,11 @@ export class NewUserService {
     const options = {
       to: data.email,
       name: data.name,
-      subject:"Ative sua conta!",
-      text: "Aqui vem um template",
-      templatePath: "./users/template"
-    }
-const teste = await this.sendMail.execute(options); 
+      subject: 'Ative sua conta!',
+      text: 'Aqui vem um template',
+      templatePath: './users/template',
+    };
+    await this.sendMail.execute(options);
     return await this.userRepository.create({
       ...data,
       password,

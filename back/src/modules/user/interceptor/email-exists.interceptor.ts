@@ -3,7 +3,6 @@ import {
   NestInterceptor,
   ExecutionContext,
   CallHandler,
-  HttpException,
   BadRequestException,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
@@ -19,8 +18,15 @@ export class EmailExistsInterceptor implements NestInterceptor {
   ): Promise<Observable<any>> {
     const req = context.switchToHttp().getRequest();
     const emailExists = await this.userRepository.findEmail(req.body);
-    if (emailExists) {
-      throw new BadRequestException('Email already exists');
+    if (req.path === '/api/user/newuser') {
+      if (emailExists) {
+        throw new BadRequestException('Email already exists');
+      }
+    }
+    if (req.path === '/api/auth/login') {
+      if (!emailExists) {
+        throw new BadRequestException('The email provided was not found');
+      }
     }
     return next.handle();
   }
