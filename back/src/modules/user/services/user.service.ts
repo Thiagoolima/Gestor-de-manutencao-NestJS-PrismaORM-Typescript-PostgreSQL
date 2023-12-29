@@ -6,6 +6,8 @@ import { JwtService } from '@nestjs/jwt';
 import { ManagerFiles } from 'src/configs/aws/sdk-s3.config';
 import { FileDTO } from '../dto/file.dto';
 import { SendMail } from 'src/utils/sendMail.utils';
+import { Request } from 'express';
+
 @Injectable()
 export class NewUserService {
   constructor(
@@ -14,7 +16,7 @@ export class NewUserService {
     private managerFiles: ManagerFiles,
     private sendMail: SendMail,
   ) {}
-  async createUser(data: CreateUserDTO, files?: Array<FileDTO>) {
+  async createUser(data: CreateUserDTO, req: Request, files?: Array<FileDTO>) {
     const password = await bcrypt.hash(data.password, 10);
     const token = await this.jwtService.sign({
       name: data.name,
@@ -28,8 +30,8 @@ export class NewUserService {
       to: data.email,
       name: data.name,
       subject: 'Ative sua conta!',
-      text: 'Aqui vem um template',
-      templatePath: './users/template',
+      templatePath: './src/templates/account-activate.template.html',
+      activationLink: `${req.protocol}://${req.headers.host}/api/auth/activateaccount?token=${token}`,
     };
     await this.sendMail.execute(options);
     return await this.userRepository.create({

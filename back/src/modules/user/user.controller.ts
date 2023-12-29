@@ -5,6 +5,7 @@ import {
   UploadedFiles,
   UseInterceptors,
   UsePipes,
+  Req,
 } from '@nestjs/common';
 import { CreateUserDTO } from './dto/user.dto';
 import { NewUserService } from './services/user.service';
@@ -13,6 +14,7 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { CreateUserValidationBody } from './pipes/create-user-validation-body.pipe';
 import { createUserSchema } from './schemas/create-user.schema';
 import { EmailExistsInterceptor } from './interceptor/email-exists.interceptor';
+import { Request } from 'express';
 
 @Controller('user')
 export class UserController {
@@ -23,7 +25,8 @@ export class UserController {
   async create(
     @Body() data: CreateUserDTO,
     @UploadedFiles() files: Array<FileDTO>,
+    @Req() req: Request,
   ) {
-    return await this.newUserService.createUser(data, files);
+    return await this.newUserService.createUser(data, req, files);
   }
 }

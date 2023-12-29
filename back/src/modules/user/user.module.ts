@@ -7,6 +7,7 @@ import { UserPrismaRepository } from 'src/prisma/user.prisma.repository';
 import { ManagerFiles } from 'src/configs/aws/sdk-s3.config';
 import { SendMail } from 'src/utils/sendMail.utils';
 import { TransporterNodemailer } from 'src/configs/nodemailer/transporter.nodemailer';
+import { CompileHandlebars } from 'src/configs/handlebars/compile.handlbers';
 
 @Module({
   imports: [],
@@ -21,6 +22,7 @@ import { TransporterNodemailer } from 'src/configs/nodemailer/transporter.nodema
     },
     TransporterNodemailer,
     SendMail,
+    CompileHandlebars,
   ],
 })
 export class UserModule {}
