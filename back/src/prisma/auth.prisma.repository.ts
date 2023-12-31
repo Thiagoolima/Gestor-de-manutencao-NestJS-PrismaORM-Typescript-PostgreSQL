@@ -17,16 +17,13 @@ export class AuthPrismaRepository implements AuthRepository {
       },
     });
   }
-  async updateActive(data: UpdateActivateUserDTO): Promise<UserCreatedDTO> {
-    const { id, activation_token } = data;
+  async updateActive(
+    where: UpdateActivateUserDTO,
+    data: any,
+  ): Promise<UserCreatedDTO> {
     return await this.prisma.users.update({
-      where: {
-        id,
-        activation_token,
-      },
-      data: {
-        active: true,
-      },
+      where,
+      data,
     });
   }
 }

@@ -5,5 +5,6 @@ export type SendMailOptionsDTO = {
   text?: string;
   html?: string;
   templatePath: string;
-  activationLink: string;
+  activationLink?: string;
+  resetPasswordLink?: string;
 };

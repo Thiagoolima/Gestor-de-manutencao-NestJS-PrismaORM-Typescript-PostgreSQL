@@ -11,3 +11,7 @@ export type UpdateActivateUserDTO = {
   id: number;
   activation_token: string;
 };
+
+export type RecoveryPasswordDTO = {
+  email: string;
+};
