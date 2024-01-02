@@ -80,13 +80,19 @@ export class AuthService {
         { id, name },
         { expiresIn: '15m' },
       );
-      await this.sendMail.execute({
-        to: data.email,
-        name: name,
-        subject: 'Recuperação de senha!',
-        templatePath: './src/templates/recovery-password.template.html',
-        resetPasswordLink: `${req.protocol}://${req.headers.host}/api/auth/recoverypassword?token=${recoveryToken}`,
-      });
+      await Promise.all([
+        this.authRepository.updateActive(
+          { id, name },
+          { recovery_pass_token: recoveryToken },
+        ),
+        this.sendMail.execute({
+          to: data.email,
+          name: name,
+          subject: 'Recuperação de senha!',
+          templatePath: './src/templates/recovery-password.template.html',
+          resetPasswordLink: `${req.protocol}://${req.headers.host}/api/auth/recoverypassword?token=${recoveryToken}`,
+        }),
+      ]);
     }
     return {
       message:
@@ -94,7 +100,24 @@ export class AuthService {
     };
   }
   async setNewPassword(token: string) {
-    const teste = this.jwtService.verify(token);
-    console.log(teste);
+    try {
+      const { email } = this.jwtService.verify(token);
+      const { recovery_pass_token } = await this.authRepository.findEmail({
+        email,
+      });
+      if (recovery_pass_token === token) {
+        // continuar aqui! **************************************************************************************
+      }
+    } catch (error) {
+      if (
+        error.name === 'JsonWebTokenError' ||
+        error.name === 'TokenExpiredError'
+      ) {
+        throw new UnauthorizedException(
+          'Sorry, the activation link is invalid or has expired.',
+        );
+      }
+      throw error;
+    }
   }
 }

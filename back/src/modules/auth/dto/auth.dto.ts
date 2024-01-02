@@ -9,7 +9,9 @@ export type FindEmailDTO = {
 
 export type UpdateActivateUserDTO = {
   id: number;
-  activation_token: string;
+  name?: string;
+  activation_token?: string;
+  recovery_pass_token?: string;
 };
 
 export type RecoveryPasswordDTO = {
