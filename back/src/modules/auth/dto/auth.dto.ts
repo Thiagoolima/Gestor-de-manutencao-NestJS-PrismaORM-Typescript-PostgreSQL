@@ -9,11 +9,15 @@ export type FindEmailDTO = {
 
 export type UpdateActivateUserDTO = {
   id: number;
-  name?: string;
+  email?: string;
   activation_token?: string;
   recovery_pass_token?: string;
 };
 
 export type RecoveryPasswordDTO = {
   email: string;
+};
+
+export type SetNewPasswordDTO = {
+  password: string;
 };

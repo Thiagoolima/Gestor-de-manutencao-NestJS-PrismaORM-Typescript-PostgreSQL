@@ -2,12 +2,17 @@ import {
   Body,
   Controller,
   Get,
+  Headers,
   Post,
   Query,
   Req,
   UseInterceptors,
 } from '@nestjs/common';
-import { LoginDTO, RecoveryPasswordDTO } from './dto/auth.dto';
+import {
+  LoginDTO,
+  RecoveryPasswordDTO,
+  SetNewPasswordDTO,
+} from './dto/auth.dto';
 import { AuthService } from './services/auth.service';
 import { EmailExistsInterceptor } from '../user/interceptor/email-exists.interceptor';
 import { Request } from 'express';
@@ -34,16 +39,11 @@ export class AuthController {
     return await this.authService.resetPasswordRequest(data, req);
   }
 
-  @Post('recoverypassword')
-  async executeUpdatePass(
-    @Body() data: RecoveryPasswordDTO,
-    @Req() req: Request,
+  @Post('setnewpassword')
+  async executeSetNewPass(
+    @Body() data: SetNewPasswordDTO,
+    @Headers('authorization') bearerToken: string,
   ) {
-    return await this.authService.resetPasswordRequest(data, req);
-  }
-
-  @Get('recoverypassword')
-  async executeSetPass(@Query('token') token: string) {
-    return await this.authService.setNewPassword(token);
+    return await this.authService.setNewPassword(data, bearerToken);
   }
 }

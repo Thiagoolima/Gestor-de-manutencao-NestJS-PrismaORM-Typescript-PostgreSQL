@@ -3,7 +3,7 @@ import { FindEmailDTO, UpdateActivateUserDTO } from '../dto/auth.dto';
 
 export abstract class AuthRepository {
   abstract findEmail(data: FindEmailDTO): Promise<UserCreatedDTO | null>;
-  abstract updateActive(
+  abstract update(
     where: UpdateActivateUserDTO,
     data: any,
   ): Promise<UserCreatedDTO>;

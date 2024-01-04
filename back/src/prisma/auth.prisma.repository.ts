@@ -17,7 +17,7 @@ export class AuthPrismaRepository implements AuthRepository {
       },
     });
   }
-  async updateActive(
+  async update(
     where: UpdateActivateUserDTO,
     data: any,
   ): Promise<UserCreatedDTO> {
