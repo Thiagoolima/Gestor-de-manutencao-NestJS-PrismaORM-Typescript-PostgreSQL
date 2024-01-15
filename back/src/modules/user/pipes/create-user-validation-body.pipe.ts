@@ -4,8 +4,8 @@ import {
   ArgumentMetadata,
   BadRequestException,
 } from '@nestjs/common';
-import { CreateUserDTO } from '../dto/user.dto';
-import * as Joi from 'joi';
+
+import Joi from 'joi';
 @Injectable()
 export class CreateUserValidationBody implements PipeTransform {
   constructor(private readonly schema: Joi.ObjectSchema) {}

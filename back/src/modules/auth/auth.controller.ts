@@ -7,6 +7,7 @@ import {
   Query,
   Req,
   UseInterceptors,
+  UsePipes,
 } from '@nestjs/common';
 import {
   LoginDTO,
@@ -16,6 +17,8 @@ import {
 import { AuthService } from './services/auth.service';
 import { EmailExistsInterceptor } from '../user/interceptor/email-exists.interceptor';
 import { Request } from 'express';
+import { UpdatePasswordValidationBody } from './pipes/update-password-validation-body.pipe';
+import { UpdatePasswordSchema } from './schemas/update-password.schemas';
 
 @Controller('auth')
 export class AuthController {
@@ -40,6 +43,7 @@ export class AuthController {
   }
 
   @Post('setnewpassword')
+  @UsePipes(new UpdatePasswordValidationBody(UpdatePasswordSchema))
   async executeSetNewPass(
     @Body() data: SetNewPasswordDTO,
     @Headers('authorization') bearerToken: string,

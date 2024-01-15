@@ -11,15 +11,101 @@ datasource db {
 }
 
 model Users {
-  id                  Int      @id @default(autoincrement())
-  name                String
-  email               String
-  password            String
-  url_img_profile     String?
-  active              Boolean  @default(false)
+  id                  Int        @id @default(autoincrement())
+  name                String @db.VarChar(64)
+  email               String @db.VarChar(120)
+  password            String @db.VarChar(120)
+  url_img_profile     String? 
+  active              Boolean    @default(false)
   activation_token    String?
   recovery_pass_token String?
-  created_at          DateTime @default(now())
+  created_at          DateTime   @default(now())
+  vehicles            Vehicles[]
 
   @@map("users")
+}
+
+model Vehicles {
+  plate            String           @id @db.Char(7)
+  model            String?          @db.VarChar(64)
+  manufacturer     String?          @db.VarChar(64)
+  fabrication_year String?          @db.Char(4)
+  model_year       String?          @db.Char(4)
+  current_odometer Int
+  url_img_vehicle  String?
+  fuel_type        String?          @db.VarChar(30)
+  category         String?          @db.VarChar(30)
+  created_at       DateTime         @default(now())
+  user_id          Int
+  user             Users            @relation(fields: [user_id], references: [id])
+  service_order    Service_orders[]
+  refueling        Refuelings[]
+
+  @@map("vehicles")
+}
+
+model Service_orders {
+  id            Int                   @id @default(autoincrement())
+  service_date  DateTime
+  odometer      Int
+  vehicle_plate String                @db.Char(7)
+  supplier_id   Int
+  plate         Vehicles              @relation(fields: [vehicle_plate], references: [plate])
+  supplier      Suppliers             @relation(fields: [supplier_id], references: [id])
+  attachment    Attachments[]
+  items         Service_order_items[]
+
+  @@map("service_orders")
+}
+
+model Suppliers {
+  id            Int              @id @default(autoincrement())
+  name          String           @db.VarChar(120)
+  phone         String?           @db.VarChar(12)
+  service_order Service_orders[]
+
+  @@map("supplier")
+}
+
+model Attachments {
+  id               Int            @id @default(autoincrement())
+  url              String
+  name             String         @db.VarChar(120)
+  created_at       DateTime       @default(now())
+  service_order_id Int
+  service_order    Service_orders @relation(fields: [service_order_id], references: [id])
+
+  @@map("attachments")
+}
+
+model Service_order_items {
+  id               Int            @id @default(autoincrement())
+  service_order_id Int
+  service_id       Int
+  cost             Int
+  service_order    Service_orders @relation(fields: [service_order_id], references: [id])
+  service          Services       @relation(fields: [service_id], references: [id])
+
+  @@map("service_order_items")
+}
+
+model Services {
+  id          Int                   @id @default(autoincrement())
+  description String                @db.VarChar(120)
+  items       Service_order_items[]
+
+  @@map("services")
+}
+
+model Refuelings {
+  id               Int      @id @default(autoincrement())
+  date             DateTime
+  liters           Decimal  @db.Decimal(10, 2)
+  cost             Int
+  full_tank        Boolean  @default(false)
+  odometer         Int
+  vehicle_plate_id String   @db.Char(7)
+  vehicle          Vehicles @relation(fields: [vehicle_plate_id], references: [plate])
+
+  @@map("refuelings")
 }
