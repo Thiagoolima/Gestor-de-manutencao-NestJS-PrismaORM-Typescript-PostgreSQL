@@ -1,4 +1,4 @@
-import Joi from 'joi';
+import * as Joi from 'joi';
 
 export const UpdatePasswordSchema = Joi.object({
   password: Joi.string().min(6).alphanum().required().messages({

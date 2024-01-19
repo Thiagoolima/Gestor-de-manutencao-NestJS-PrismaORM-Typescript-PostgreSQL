@@ -17,7 +17,7 @@ export class UserPrismaRepository implements UserRepository {
       },
     });
   }
-  async create(data: CreateUserDTO): Promise<UserCreatedDTO> {
+  async createUser(data: CreateUserDTO): Promise<UserCreatedDTO> {
     return await this.prisma.users.create({
       data,
     });

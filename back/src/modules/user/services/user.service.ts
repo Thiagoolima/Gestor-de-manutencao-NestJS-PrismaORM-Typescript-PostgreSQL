@@ -34,7 +34,7 @@ export class NewUserService {
       activationLink: `${req.protocol}://${req.headers.host}/api/auth/activateaccount?token=${token}`,
     };
     await this.sendMail.execute(options);
-    return await this.userRepository.create({
+    return await this.userRepository.createUser({
       ...data,
       password,
       activation_token: token,

@@ -57,16 +57,11 @@ export class AuthService {
       if (findUser.activation_token !== token) {
         throw new BadRequestException('invalid or altered token');
       }
-      await this.authRepository.update(
-        {
-          id: findUser.id,
-          activation_token: token,
-        },
-        {
-          active: true,
-          activation_token: null,
-        },
-      );
+      await this.authRepository.updateActiveUser({
+        id: findUser.id,
+        activation_token: token,
+        active: true,
+      });
     } catch (error) {
       if (
         error.name === 'JsonWebTokenError' ||
@@ -88,10 +83,10 @@ export class AuthService {
         { expiresIn: '15m' },
       );
       await Promise.all([
-        this.authRepository.update(
-          { id, email },
-          { recovery_pass_token: recoveryToken },
-        ),
+        this.authRepository.newResetPassword({
+          id,
+          recovery_pass_token: recoveryToken,
+        }),
         this.sendMail.execute({
           to: email,
           name: name,
@@ -114,16 +109,11 @@ export class AuthService {
         await this.authRepository.findEmail(email);
       if (recovery_pass_token === token) {
         const hash = await bcrypt.hash(data.password, 10);
-        await this.authRepository.update(
-          {
-            id,
-            email,
-          },
-          {
-            password: hash,
-            recovery_pass_token: null,
-          },
-        );
+        await this.authRepository.setNewPassword({
+          id,
+          password: hash,
+          recovery_pass_token: null,
+        });
         return {
           message: 'Password changed successfully',
         };
