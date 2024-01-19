@@ -49,7 +49,7 @@ export class AuthService {
   }
   async activateNewUser(token: any) {
     try {
-      const { email } = await this.jwtService.verify(token);
+      const { email } = this.jwtService.verify(token);
       const findUser = await this.authRepository.findEmail(email);
       if (findUser.active) {
         throw new BadRequestException('User has already been activated');

@@ -18,7 +18,7 @@ export class NewUserService {
   ) {}
   async createUser(data: CreateUserDTO, req: Request, files?: Array<FileDTO>) {
     const password = await bcrypt.hash(data.password, 10);
-    const token = await this.jwtService.sign({
+    const token = this.jwtService.sign({
       name: data.name,
       email: data.email,
     });
